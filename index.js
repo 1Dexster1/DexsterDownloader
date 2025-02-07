@@ -37,7 +37,7 @@ app.get('/download', async (req, res) => {
 });
 
 // تشغيل السيرفر
-const PORT = process.env.PORT || 6231;
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
     console.log(`API is running on http://localhost:${PORT}`);
 });
