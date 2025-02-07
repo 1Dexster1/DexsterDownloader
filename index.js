@@ -1,12 +1,13 @@
 const express = require('express');
 const ytdl = require('ytdl-core');
 const cors = require('cors');
-const ProxyAgent = require('proxy-agent');
+const { HttpsProxyAgent } = require('https-proxy-agent'); // استدعاء مكتبة البروكسي
 
 const app = express();
 app.use(cors());
 
-const PROXY_URL = "http://180.184.79.187:12798"; // استبدل بهذا الوكيل الحقيقي
+const COOKIES = "VISITOR_INFO1_LIVE=-VKdL7o7xRI; YSC=lMJdc4Tq_hI; PREF=tz=Africa.Cairo&f6=40000000&f5=30000"; // ضع الكوكيز هنا
+const PROXY_URL = "http://123.456.789.101:8080"; // ضع بروكسي صيني شغال
 
 app.get('/', (req, res) => {
     res.json({ status: 'API is running', usage: '/download?url=YOUTUBE_URL&type=audio|video' });
@@ -22,11 +23,15 @@ app.get('/download', async (req, res) => {
     try {
         res.header('Content-Disposition', `attachment; filename=${type === 'audio' ? 'audio.mp3' : 'video.mp4'}`);
 
+        const agent = new HttpsProxyAgent(PROXY_URL); // إنشاء البروكسي
         const options = {
             filter: type === 'audio' ? 'audioonly' : 'videoandaudio',
             quality: 'highest',
             requestOptions: {
-                agent: new ProxyAgent(PROXY_URL) // توجيه الطلبات عبر الوكيل
+                headers: {
+                    'Cookie': COOKIES
+                },
+                agent // تمرير البروكسي للطلب
             }
         };
 
