@@ -1,11 +1,12 @@
 const express = require('express');
 const ytdl = require('ytdl-core');
 const cors = require('cors');
+const ProxyAgent = require('proxy-agent');
 
 const app = express();
 app.use(cors());
 
-const COOKIES = "VISITOR_INFO1_LIVE=-VKdL7o7xRI; YSC=lMJdc4Tq_hI; PREF=tz=Africa.Cairo&f6=40000000&f5=30000"; // ضع الكوكيز هنا
+const PROXY_URL = "http://180.184.79.187:12798"; // استبدل بهذا الوكيل الحقيقي
 
 app.get('/', (req, res) => {
     res.json({ status: 'API is running', usage: '/download?url=YOUTUBE_URL&type=audio|video' });
@@ -25,9 +26,7 @@ app.get('/download', async (req, res) => {
             filter: type === 'audio' ? 'audioonly' : 'videoandaudio',
             quality: 'highest',
             requestOptions: {
-                headers: {
-                    'Cookie': COOKIES
-                }
+                agent: new ProxyAgent(PROXY_URL) // توجيه الطلبات عبر الوكيل
             }
         };
 
