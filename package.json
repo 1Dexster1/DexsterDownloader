@@ -1,8 +1,22 @@
 {
+  "name": "my-api",
+  "version": "1.0.0",
+  "description": "API for my project",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "postinstall": "npx youtube-dl-exec --version"
+  },
   "dependencies": {
     "@distube/ytdl-core": "^4.15.8",
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "youtube-dl-exec": "^3.0.12"
-  }
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "keywords": [],
+  "author": "Your Name",
+  "license": "ISC"
 }
