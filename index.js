@@ -1,16 +1,16 @@
 const express = require('express');
-const ytdl = require('@distube/ytdl-core');
+const ytdl = require('ytdl-core');
 const cors = require('cors');
 
 const app = express();
-app.use(cors()); // السماح بالطلبات من أي مصدر
+app.use(cors());
 
-// صفحة الفحص
+const COOKIES = "VISITOR_INFO1_LIVE=-VKdL7o7xRI; YSC=lMJdc4Tq_hI; PREF=tz=Africa.Cairo&f6=40000000&f5=30000"; // ضع الكوكيز هنا
+
 app.get('/', (req, res) => {
     res.json({ status: 'API is running', usage: '/download?url=YOUTUBE_URL&type=audio|video' });
 });
 
-// API لتحميل الفيديو أو الصوت
 app.get('/download', async (req, res) => {
     const { url, type } = req.query;
 
@@ -20,24 +20,26 @@ app.get('/download', async (req, res) => {
 
     try {
         res.header('Content-Disposition', `attachment; filename=${type === 'audio' ? 'audio.mp3' : 'video.mp4'}`);
-        const stream = ytdl(url, {
+
+        const options = {
             filter: type === 'audio' ? 'audioonly' : 'videoandaudio',
             quality: 'highest',
             requestOptions: {
                 headers: {
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                },
-            },
-        });
+                    'Cookie': COOKIES
+                }
+            }
+        };
+
+        const stream = ytdl(url, options);
         stream.pipe(res);
     } catch (error) {
         console.error('Download Error:', error.message);
-        res.status(500).json({ error: 'Download failed. Please check the URL or try again later.' });
+        res.status(500).json({ error: 'Download failed. Please try again later.' });
     }
 });
 
-// تشغيل السيرفر
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 6231;
 app.listen(PORT, () => {
     console.log(`API is running on http://localhost:${PORT}`);
 });
